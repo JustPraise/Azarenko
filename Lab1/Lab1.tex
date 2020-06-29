@@ -1,0 +1,204 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode} 
+\usepackage{fancyhdr}
+
+%---enable russian----
+
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+
+% PROBABILITY SYMBOLS
+\newcommand*\PROB\Pr 
+\DeclareMathOperator*{\EXPECT}{\mathbb{E}}
+
+
+% Sets, Rngs, ets 
+\newcommand{\N}{{{\mathbb N}}}
+\newcommand{\Z}{{{\mathbb Z}}}
+\newcommand{\R}{{{\mathbb R}}}
+\newcommand{\Zp}{\ints_p} % Integers modulo p
+\newcommand{\Zq}{\ints_q} % Integers modulo q
+\newcommand{\Zn}{\ints_N} % Integers modulo N
+
+% Landau 
+\newcommand{\bigO}{\mathcal{O}}
+\newcommand*{\OLandau}{\bigO}
+\newcommand*{\WLandau}{\Omega}
+\newcommand*{\xOLandau}{\widetilde{\OLandau}}
+\newcommand*{\xWLandau}{\widetilde{\WLandau}}
+\newcommand*{\TLandau}{\Theta}
+\newcommand*{\xTLandau}{\widetilde{\TLandau}}
+\newcommand{\smallo}{o} %technically, an omicron
+\newcommand{\softO}{\widetilde{\bigO}}
+\newcommand{\wLandau}{\omega}
+\newcommand{\negl}{\mathrm{negl}} 
+
+% Misc
+\newcommand{\eps}{\varepsilon}
+\newcommand{\inprod}[1]{\left\langle #1 \right\rangle}
+
+\newcommand{\lecture}[4]{\handout{#1}{#2}{#3}{Scribe: #4}{Название темы #1}}
+
+\newtheorem*{corollary*}{Следствие}
+\newtheorem*{theorem*}{Теорема 2-1}
+\newtheorem*{definition*}{Определение 2-1}
+\newtheorem{theorem}{Теорема}
+\newtheorem{lemma}{Лемма}
+\newtheorem{definition}{Определение}
+\newtheorem{corollary}{Следствие}
+\newtheorem{fact}{Факт}
+
+% 1-inch margins
+\topmargin 0pt
+\advance \topmargin by -\headheight
+\advance \topmargin by -\headsep
+\textheight 8.9in
+\oddsidemargin 0pt
+\evensidemargin \oddsidemargin
+\marginparwidth 0.5in
+\textwidth 6.5in
+
+\parindent 0in
+\parskip 1.5ex
+\setcounter{page}{20}
+
+\fancypagestyle{1}{
+	\fancyfoot[C]{\textbf{\thepage}}
+	\renewcommand{\headrulewidth}{0pt}
+}
+
+\fancypagestyle{2}{
+	\fancyhead[L]{\textbf{РАЗД. 2-1}}
+	\fancyhead[C]{\textbf{Алгоритм Деления}}
+	\fancyhead[R]{\textbf{\thepage}}
+	\fancyfoot{}
+	\renewcommand{\headrulewidth}{0pt}
+}
+
+\fancypagestyle{3}{
+	\fancyhead[L]{\textbf{\thepage}}
+	\fancyhead[C]{\textbf{Теория Делимости целых чисел}}
+	\fancyhead[R]{\textbf{ГЛАВ. 2}}
+	\fancyfoot{}
+	\renewcommand{\headrulewidth}{0pt}
+}
+
+\fancypagestyle{4}{
+	\fancyhead[L]{\textbf{РАЗД. 2-2}}
+	\fancyhead[C]{\textbf{Наибольший Общий Делитель}}
+	\fancyhead[R]{\textbf{\thepage}}
+	\fancyfoot{}
+	\renewcommand{\headrulewidth}{0pt}
+}
+
+\begin{document}
+\leftskip=-0.9cm \section*{2.1 АЛГОРИТМ ДЕЛЕНИЯ}
+\Large \leftskip=-0.9cm \rightskip=-0.9cm \thispagestyle{1} Мы рассматривали целые числа на протяжении нескольких страниц но до сих пор не было получено ни одного свойства делимости. Время исправить эту ситуацию. Одна из теорем служит краеугольным камнем для всех наших рассуждений: Алгоритм Деления. Результат знаком для большинства; грубо говоря, целое число $a$ может быть "разделено"\:положительным целым $b$ так, что остаток от деления будет меньше, чем $b$. Конкретное утверждение данного факта это\\
+\begin{theorem*}[Алгоритм Деления] Для любых целых a и b, при $b>0$, существуют и определяются однозначно целые q и r, удовлетворяющие условию
+\begin{flushright}
+$a=qb+r$,\qquad \qquad \qquad \qquad \qquad $0\leq r<b.$
+\end{flushright}
+Целые числа q и r называютсяю,  соответсвенно, частным и остатком при делении a на b.
+\end{theorem*}
+
+\begin{proof}
+Докажем, что множество
+\begin{center}
+	$S=\{a-xb|$ \textit{x} -- целое; $a-xb\geq0\}$
+\end{center} 
+непусто. Для этого достаточно найти такое значение \textit{x}, при котором выражение $a-xb$ неотрицательно. Т.к. $b\geq1$, то $|a|b\geq |a|$ и тогда
+\begin{center}
+	$a-(-|a|)b=a+|a|b\geq a+|a|\geq 0.$
+\end{center} 
+Следовательно, для $x=-|a|,a-xb$ будет лежать в $S$. Это позволяет применить Принцип Вполнеупорядочивания, благодаря коему можно сделать вывод, что множество $S$ содержит наименьший целый элемент, а именно $r$. По определению $S$, существует целое $q$, удовлетворяющее условию
+\begin{flushright}
+	$r=a-qb$, \qquad \qquad \qquad \qquad \qquad \qquad $0\leq r$.
+\end{flushright}
+Предположим, что $r<b$, если это не так, то $r\geq b$ и
+\begin{center}
+	$a-(q+1)b=(a-qb)-b=r-b\geq 0$.
+\end{center}
+Подразумевается, что целое число $a-(q+1)b$ имеет правильный вид, чтобы принадлежать множеству $S$. Но $a-(q+1)b=r-b<r$, что приводит к противоречию к утверждению того, что $r$ является наименьшим элементом $S$. Следовательно, $r<b$.
+
+\qquad \quad \thispagestyle{2} Далее перейдем к задаче показания уникальности $q$ и $r$. Предположим, что у $a$ есть два представления желаемого вида; скажем
+\begin{center}
+	$a=qb+r=q'b+r'$, 
+\end{center}
+где $0\leq r<b, 0\leq r'<b$. Тогда $r'-r=b(q-q')$ и, благодаря тому факту, что абсолютное значение произведения равно произведению абсолютных значений,
+\begin{center}
+	$|r'-r|=b|q-q'|$.
+\end{center}
+При сложении двух неравенств $-b<-r\leq 0$ и $0\leq r'<b$ получаем $-b<r'-r<b$, т. е. $|r'-r|<b$. Таким образом, $b|q-q'|<b$, что дает
+\begin{center}
+	$0\leq |q-q'|<1$.
+\end{center}
+Так как $|q-q'|$ неотрицательное целое число, то единственный вариант это то, что $|q-q'|=0$, откуда $q=q'$; это в свою очередь показывает, что $r=r'$, что и требовалось доказать.
+\end{proof}
+
+\qquad \quad \leftskip=-0.9cm \rightskip=-0.9cm Более общая версия Алгоритма Деления получается путем замены ограничения того, что $b$ положительно на условие $b\neq 0$.
+
+\begin{corollary*}
+Если a и b целые, при этом $b\neq 0$, тогда существуют уникальные целые q и r, такие что
+\begin{flushright}
+	$a=qb+r$, \qquad \qquad \qquad \qquad \quad $0\leq r<|b|$.
+\end{flushright}
+\end{corollary*}
+
+\begin{proof}
+Достаточно рассмотреть случай, когда число $b$ отрицательное. Тогда $|b|>0$, а значит существуют уникальные целые числа $q'$ и $r$ для которых справедливо
+\begin{flushright}
+	$a=q'|b|+r$,\qquad \qquad \qquad \qquad \quad $0\leq r<|b|$.
+\end{flushright}
+Нет такого $b$ чтобы $|b|=-b$, но можно взять $q=q'$ и получить $a=qb+r$ при $0\leq r<|b|$.
+\end{proof}
+\qquad \quad \leftskip=-0.9cm \rightskip=-0.9cm \thispagestyle{3} Чтобы проиллюстрировать Алгоритм Деления для $b<0$, возьмем $b=-7$. Тогда для $a=1,-2,61,-59$ получим выражения
+\begin{center}
+	$1=0(-7)+1,$\\
+	$-2=1(-7)+5,$\\
+	$61=(-8)(-7)+5,$\\
+	$-59=9(-7)+4.$
+\end{center}
+Следует обратить внимание не столько на Алгоритм Деления, сколько на его применения. Так, в первом примере при $b=2$ возможными остатками являются $r=0$ и $r=1$. При $r=0$ целое $a$ принимает вид $a=2q$ и называется \textit{четным}; при $r=1$, целое $a$ принимает вид $a=2q+1$ и называется \textit{нечетным}. Тогда $a^2$ принимает вид $(2q)^2-4k$ или $(2q+1)^2=4(q^2+q)+1=4k+1$. Смысл в том, что при делении квадрата целого числа на 4 остаток будет равен либо 1 либо 0.
+
+\qquad \quad Отсюда же получается следствие: Квадрат любого нечетного целого числа представим в форме $8k+1$. Любое целое число, по Алгоритму Деления, может быть представлено в одном из четырех видов $4q, 4q+1, 4q+2, 4q+3$. В этой классификации только целые числа вида $4q+1$ и $4q+3$ являются нечетными. При возведении их в квадрат, получаем
+\begin{center}
+	$(4q+1)^2=8(2q^2+q)+1=8k+1$
+\end{center}
+и соответственно
+\begin{center}
+	$(4q+1)^2=8(2q^2+3q+1)+1=8k+1$
+\end{center}
+Для примера, квадрат нечетного числа 7 это $7^2=49=8\cdot 6+1$, тогда как квадрат 13 это $13^2=169=8\cdot 21+1$.
+\begin{center}
+	\section*{ЗАДАЧИ 2.1}
+\end{center}
+\begin{enumerate}\leftskip=-0.9cm \rightskip=-0.9cm
+	\item Доказать что если $a$ и $b$ целые и $b>0$, то существуют уникальные целые $q$ и $r$, удовлетворяющие условию $a=qb+r$, где $2b\leq r<3b$. 
+	\item Показать что любые целые числа, представимые в виде $6k+5$ также представимы в виде $3k+2$, но не наоборот.
+	\item Используя Алгоритм деления, показать что \\
+	(a)\; каждое целое нечетное число представимо как в виде $4k+1$ так и в виде $4k+3$;\\
+	(b)\; квадрат любого целого числа представим как в виде $3k$ так и в виде $3k+1$;\\
+	(c)\; куб любого целого числа представим в любом из данных видов: $9k, 9k+1,$ или $9k+8$.
+	\item Для $n\geq 1$ доказать, что $n(n+1)(2n+1)/6$ является целым числом.\; [\textit{Подсказка:} Применяя Алгоритм Деления, $n$ может быть представлен в одном из видов $6k, 6k+1, ..., 6k+5$; требуется получить результат в каждом из шести случаев.]
+	\item Проверить, что если целое число является и квадратом и кубом одновременно (как в случае с $64=8^2=4^3$), то оно представимо в одном из видов $7k$ или $7k+1$.
+	\item Получить следующий вариант Алгоритма Деления: Для целых $a$ и $b$ при $b\neq 0$, существуют уникальные целые $q$ и $r$, удовлетворяющие условию $a=qb+r$, где $-\frac{1}{2}|b|<r\leq \frac{1}{2}|b|$.\; [\textit{Подсказка:} Сначала следует записать $a=q'b+r'$, где $0\leq r'<|b|$. При $0\leq r'\leq \frac{1}{2}|b|$, пусть $r=r'$ и $q=q'$; при $\frac{1}{2}b<r'<|b|$, пусть $r=r'-|b|$ и $q=q'+1$, если $b>0$ или $q=q'-1$, если $b<0$.]
+	\item Доказать, что в последовательности
+	\begin{center}
+		$11, 111, 1111, 11111,...$
+	\end{center}
+	нет целых чисел, являющихся квадратами.\; [\textit{Подсказка:} Выражение $111...111$ может быть записано как $111...111=111...108+3=4k+3$.]
+\end{enumerate}
+\thispagestyle{4}
+\section*{2.2 НАИБОЛЬШИЙ ОБЩИЙ ДЕЛИТЕЛЬ}
+В особых случаях остаток в Алгоритме Деления оказывается равным нулю. Рассмотрим данную ситуацию.
+
+\leftskip=0cm \rightskip=0cmОпределение 2-1. Говорят, что целое число $b$ \textit{делится} на целое число $a\neq 0$ и обозначается $a\ |\  b$, если существует некоторое целое число $c$, такое что $b=ac$. В случае, если $b$ не делится на $a$, то пишут $a\nmid b$.
+
+\leftskip=-0.9cm \rightskip=-0.9cm \qquad \quad Таким образом, например, $-12$ делится на 4, т.к $-12=4(-3)$. Тем не менее, 10 не делится на 3; в данном случае нет такого $c$, для которого выполняется условие $10=3c$. 
+
+\qquad \quad Также существует иной язык для выражения отношения делимости $a\ |\ b$. Можно сказать, что $a$ это \textit{делитель} $b$, $a$ это \textit{фактор} $b$ или же $b$ \textit{кратно} $a$. Стоит обратить внимание на то, что в Определении 2-1 есть ограничение для делителя $a$: всякий раз, когда используется обозначение $a\ |\ b$, стоит понимать, что $a$ всегда отлично от нуля.
+
+\qquad \quad Если $a$ является делителем $b$, то $b$ также делится на $-a$(в самом деле, $b=ac$ подразумевает что $b=(-a)(-c)$), так что делители целых чисел всегда встречаются по парам. Для того, чтобы найти все делители заданного целого числа, достаточно найти положительные делители, а затем найти все соответствующие им негативные числа. По этой причине следует ограничиться рассмотрением лишь положительных делителей. 
+\end{document}
